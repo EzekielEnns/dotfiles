@@ -1,0 +1,191 @@
+#TODO add skip and pause buttons for music
+#TODO make it so that new windows are focused automatically 
+#TODO ttyl mode for power saving 
+#TODO add xclip menue
+# Rules/Configs
+floating_maximum_size -1 x -1
+for_window [floating] sticky enable
+for_window [title="nvim_buddy"] floating enable
+for_window [window_role="toolbox"] floating enable
+
+#i3-msg -t get_tree | json_pp
+hide_edge_borders smart
+default_border pixel 1
+default_floating_border pixel 1
+popup_during_fullscreen smart
+focus_follows_mouse yes
+#smart_gaps on
+#gaps inner 5
+#gaps inner 5
+set $mod Mod4
+set $ws1 "Editor"
+set $ws2 "Dev"
+set $ws7 "Comm"
+set $ws9 "Web"
+set $ws10 "Music"
+#font pango:Monofur Nerd Font 12
+font pango:Monofur Nerd Font 12
+
+#Lockscreen
+#TODO setup
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+
+# Startup Apps
+exec_always --no-startup-id picom
+exec_always unclutter --start-hidden --timeout 1
+exec --no-startup-id nm-applet
+#TODO setup feh script
+exec --no-startup-id feh --bg-center /home/ezekielenns/Pictures/wallhaven-rdoqgm_1920x1080.png
+
+#setup
+exec alacritty -e tmux new -A -s main
+
+# Apps
+#TODO make this a terminal generatordd
+bindsym $mod+Return exec alacritty -t nvim_buddy -e tmux new -A -s main
+
+# Custom kiddies
+bindsym $mod+Shift+t exec alacritty -t timmer -e termdown
+bindsym $mod+c exec maim -s --format=png /dev/stdout | xclip -selection clipboard -t image/png -i
+#TODO setup this script
+bindsym $mod+n exec alacritty -t nvim_buddy -e bash notes.sh
+bindsym $mod+Ctrl+p exec --no-startup-id bash powermenu.sh
+
+#i3status /home/ezekielenns/.config/i3status/config
+bar {
+    font pango: Monofur Nerd Font 12
+    position top
+    status_command i3status-rs /home/ezekielenns/.config/i3status-rust/config.toml
+    colors {
+        separator #666666
+        background #00000000 
+        statusline #dddddd
+        focused_workspace #0088CC #0088CC #ffffff
+        active_workspace #333333 #333333 #ffffff
+        inactive_workspace #333333 #333333 #888888
+        urgent_workspace #2f343a #900000 #ffffff
+    }
+}
+
+# Workspaces
+# TODO map R
+# TODO mapp move workspace to output left|right|down|up|current|primary|<output>
+bindsym $mod+q workspace $ws1
+bindsym $mod+e workspace $ws2
+bindsym $mod+m workspace $ws10; exec [ $(i3-msg -t get_tree | grep \\"YouTube Music\\" | wc -L) = 0 ] &&  firefox --new-window https://music.youtube.com/
+bindsym $mod+w  workspace $ws9;  exec [ $(i3-msg -t get_tree | grep \\".title.:.Mozilla Firefox.\\" | wc -L) = 0 ] && firefox
+bindsym $mod+r workspace $ws7
+bindsym $mod+Shift+e move container to workspace  $ws2
+bindsym $mod+Shift+q move container to workspace  $ws1
+bindsym $mod+Shift+w move container to workspace  $ws9
+bindsym $mod+Shift+m move container to workspace  $ws10
+bindsym $mod+Shift+r move container to workspace  $ws7
+# Menu 
+#TODO fix
+bindsym $mod+a exec "rofi -modi drun,run -show drun"
+#bindsym $mod+Shift+r exec "rofi -modi drun,run -show window"
+#TODO map S with rolfi menue
+bindsym $mod+Ctrl+b exec alacritty -t nvim_buddy -e bluetoothctl
+bindsym $mod+Ctrl+w exec alacritty -t nvim_buddy -e nmtui
+bindsym $mod+Shift+f exec alacritty -t nvim_buddy -e $HOME/.config/nnn/nwrap.sh
+bindsym $mod+Ctrl+f exec alacritty -t nvim_buddy -e bashmount
+bindsym $mod+Ctrl+s exec alacritty -t nvim_buddy -e pacmixer || alacritty -t nvim_buddy -e alsamixer
+
+# Extra WorkSpaces
+set $ws3 "E3"
+set $ws4 "E4"
+set $ws5 "E5"
+set $ws6 "E6"
+set $ws8 "E8"
+
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+Ctrl+1 workspace $ws6
+bindsym $mod+Ctrl+2 workspace $ws7
+bindsym $mod+Ctrl+3 workspace $ws8
+bindsym $mod+Ctrl+4 workspace $ws9
+bindsym $mod+Ctrl+5 workspace $ws10
+
+
+bindsym $mod+Shift+2 move container to workspace  $ws2
+bindsym $mod+Shift+3 move container to workspace  $ws3
+bindsym $mod+Shift+4 move container to workspace  $ws4
+bindsym $mod+Shift+5 move container to workspace  $ws5
+bindsym $mod+Shift+6 move container to workspace  $ws6
+bindsym $mod+Shift+7 move container to workspace  $ws7
+bindsym $mod+Shift+8 move container to workspace  $ws8
+bindsym $mod+Shift+9 move container to workspace  $ws9
+bindsym $mod+Shift+0 move container to workspace  $ws10
+
+
+
+
+# Modes/Settings
+mode "resize" {
+        bindsym j resize shrink height 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
+        bindsym h resize shrink width 10 px or 10 ppt
+        bindsym l resize grow width 10 px or 10 ppt
+        bindsym semicolon resize grow width 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape or $mod+r
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+o mode "default"
+}
+
+bindsym $mod+o mode "resize"
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+#xrandr --output eDP --brightness 1
+bindsym XF86MonBrightnessUp exec --no-startup-id light -A 5 && $refresh_i3status
+bindsym XF86MonBrightnessDown exec --no-startup-id light -U 5&& $refresh_i3status
+
+# movment
+bindsym $mod+h focus left
+bindsym $mod+j focus up
+bindsym $mod+k focus down
+bindsym $mod+l focus right
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move up
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move right
+
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+bindsym $mod+s split v
+bindsym $mod+v split h
+#bindsym $mod+s layout stacking
+bindsym $mod+t layout tabbed
+#TODO this is toggle split
+bindsym $mod+Tab layout toggle split
+
+# common sense
+bindsym $mod+d kill
+floating_modifier $mod
+bindsym $mod+f fullscreen toggle
+bindsym $mod+Shift+space floating toggle
+
+
+bindsym $mod+space focus mode_toggle
+#bindsym $mod+a focus parent
+#bindsym $mod+d focus child
+bindsym $mod+Shift+c reload
+bindsym $mod+Ctrl+r restart

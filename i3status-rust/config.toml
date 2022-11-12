@@ -1,0 +1,93 @@
+#TODO fix blocks sound
+#TODO add blue tooth block
+#TODO add usb block
+[theme]
+theme = "solarized-dark"
+
+[icons]
+icons = "awesome"
+
+#TODO cusome blue tooth
+#TODO custome USB/media/Files
+
+[[block]]
+block = "toggle"
+icons_format = "\u0020{icon} \u0020 "
+text="de/en"
+command_on= "setxkbmap  -query | grep de"
+command_off= "setxkbmap  -query | grep us"
+command_state = "setxkbmap  -query | grep us"
+[[block.click]]
+button = "left"
+cmd = "bash langswapper.sh"
+update = true
+sync = true
+
+
+[[block]]
+block = "xrandr"
+icons_format = "\u0020{icon} \u0020"
+format = "$display"
+#TODO add arandr options
+
+[[block]]
+block = "disk_space"
+path = "/"
+info_type = "used"
+format = " $used"
+[[block.click]]
+button = "left"
+cmd = "alacritty -e ncdu --color=off"
+
+
+[[block]]
+block = "load"
+interval = 5
+icons_format = "{icon} \u0020"
+
+
+
+[[block]]
+block = "memory"
+format_mem = " $mem_total_used_percents"
+display_type = "memory"
+interval = 5
+warning_mem = 80
+critical_mem = 95
+[[block.click]]
+button="left"
+cmd= "alacritty -e htop"
+
+[[block]]
+block = "battery"
+interval = 5
+icons_format = "\u0020{icon} \u0020"
+full_format = ""
+format = "$percentage  $time"
+
+
+[[block]]
+block = "backlight"
+
+[[block]]
+block = "sound"
+format = " $volume| "
+[[block.click]]
+button = "left"
+cmd = "alacritty -e pacmixer"
+
+[[block]]
+block = "music"
+icons_format = "\u0020{icon} \u0020 "
+#TODO make this pretty
+format = "$title.str(0,10) $prev$play$next|"
+interface_name_exclude = [".*kdeconnect.*", "mpd"]
+hide_when_empty=true
+
+
+[[block]]
+block = "time"
+interval = 5
+format = "%a %d/%m %r"
+
+#https://greshake.github.io/i3status-rust/i3status_rs/blocks/index.html
